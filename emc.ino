@@ -1,3 +1,11 @@
-void setup() {}
+#include "src/line-follower.h"
 
-void loop() {}
+LineFollower task;
+
+void setup() {
+  task.setup();
+}
+
+void loop() {
+  task.loop();
+}
