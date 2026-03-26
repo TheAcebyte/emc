@@ -23,12 +23,6 @@ struct SensorState {
   bool middle;
   bool right;
 
-  void invert() {
-    left = !left;
-    middle = !middle;
-    right = !right;
-  }
-
   bool operator==(const SensorState &other) const {
     return left == other.left && middle == other.middle && right == other.right;
   }
@@ -37,25 +31,6 @@ struct SensorState {
 struct SensorMapping {
   SensorState sensors;
   Movement movement;
-};
-
-constexpr int BASE_SPEED = 70;
-constexpr int TURN_SPEED = 140;
-
-constexpr MovementMapping MOVEMENT_MAPPINGS[] = {
-    {Movement::FORWARD, {.left = BASE_SPEED, .right = BASE_SPEED}},
-    {Movement::LEFT, {.left = -TURN_SPEED, .right = TURN_SPEED}},
-    {Movement::RIGHT, {.left = TURN_SPEED, .right = -TURN_SPEED}},
-    {Movement::STOP, {.left = 0, .right = 0}},
-};
-
-constexpr SensorMapping SENSOR_MAPPINGS[] = {
-    {{.left = false, .middle = true, .right = false}, Movement::FORWARD},
-    {{.left = true, .middle = true, .right = true}, Movement::FORWARD},
-    {{.left = true, .middle = true, .right = false}, Movement::LEFT},
-    {{.left = false, .middle = true, .right = true}, Movement::RIGHT},
-    {{.left = true, .middle = false, .right = false}, Movement::LEFT},
-    {{.left = false, .middle = false, .right = true}, Movement::RIGHT},
 };
 
 class LineFollower : public Task {
@@ -72,8 +47,24 @@ private:
   static constexpr int SENSOR_MIDDLE = 2;
   static constexpr int SENSOR_RIGHT = 12;
 
-  bool invertedCircuit = false;
-  Movement lastMovement = Movement::STOP;
+  static constexpr int BASE_SPEED = 70;
+  static constexpr int TURN_SPEED = 140;
+
+  static inline constexpr MovementMapping MOVEMENT_MAPPINGS[] = {
+    {Movement::FORWARD, {.left =  BASE_SPEED, .right =  BASE_SPEED}},
+    {Movement::LEFT,    {.left = -TURN_SPEED, .right =  TURN_SPEED}},
+    {Movement::RIGHT,   {.left =  TURN_SPEED, .right = -TURN_SPEED}},
+    {Movement::STOP,    {.left =  0,          .right =  0}},
+  };
+
+  static inline constexpr SensorMapping SENSOR_MAPPINGS[] = {
+    {{.left = false, .middle = true,  .right = false}, Movement::FORWARD},
+    {{.left = true,  .middle = true,  .right = true},  Movement::FORWARD},
+    {{.left = true,  .middle = true,  .right = false}, Movement::LEFT},
+    {{.left = false, .middle = true,  .right = true},  Movement::RIGHT},
+    {{.left = true,  .middle = false, .right = false}, Movement::LEFT},
+    {{.left = false, .middle = false, .right = true},  Movement::RIGHT},
+  };
 
   void setMotors(int leftSpeed, int rightSpeed) {
     digitalWrite(IN1, leftSpeed > 0 ? HIGH : LOW);
@@ -106,18 +97,8 @@ private:
     return sensors;
   }
 
-  void checkInvertedCircuit(SensorState sensors) {
-    if (sensors.left && !sensors.middle && sensors.right) {
-      invertedCircuit = true;
-    } else if (!sensors.left && sensors.middle && !sensors.right) {
-      invertedCircuit = false;
-    }
-  }
-
   void adjustMotors(SensorState state) {
-    // if (invertedCircuit) {
-    //   state.invert();
-    // }
+    static Movement lastMovement = Movement::STOP;
 
     for (auto [sensors, movement] : SENSOR_MAPPINGS) {
       if (state == sensors) {
@@ -146,7 +127,6 @@ public:
 
   void loop() override {
     auto sensors = readSensors();
-    // checkInvertedCircuit(sensors);
     adjustMotors(sensors);
   }
 };
