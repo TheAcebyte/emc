@@ -1,5 +1,5 @@
 BOARD = arduino:avr:uno
-PORT = /dev/ttyACM0
+PORT = /dev/ttyACM1
 
 all: compile
 
@@ -12,7 +12,7 @@ upload:
 monitor:
 	arduino-cli monitor -p $(PORT)
 
-gen_lsp:
+gen-lsp:
 	arduino-cli compile --fqbn $(BOARD) --only-compilation-database --build-path build/
 
 list:
