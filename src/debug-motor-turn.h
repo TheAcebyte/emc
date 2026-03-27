@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include "task.h"
 
-class DebugMotor : public Task {
+class DebugMotorTurn : public Task {
 private:
   static constexpr int ENA = 6;
   static constexpr int IN1 = 9;
@@ -13,7 +13,7 @@ private:
   static constexpr int IN3 = 7;
   static constexpr int IN4 = 8;
 
-  static constexpr int BASE_SPEED = 100;
+  static constexpr int TURN_SPEED = 120;
 
 public:
   void setup() override {
@@ -27,12 +27,12 @@ public:
   }
 
   void loop() override {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-    analogWrite(ENA, BASE_SPEED);
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, HIGH);
+    analogWrite(ENA, TURN_SPEED);
 
     digitalWrite(IN3, HIGH);
     digitalWrite(IN4, LOW);
-    analogWrite(ENB, BASE_SPEED);
+    analogWrite(ENB, TURN_SPEED);
   }
 };
