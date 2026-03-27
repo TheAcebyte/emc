@@ -1,10 +1,11 @@
 BOARD = arduino:avr:uno
-PORT = /dev/ttyACM1
+PORT = /dev/ttyACM0
+COMPILE_FLAGS = -Isrc
 
 all: compile
 
 compile:
-	arduino-cli compile --fqbn $(BOARD) .
+	arduino-cli compile --fqbn $(BOARD) --build-property "compiler.cpp.extra_flags=$(COMPILE_FLAGS)" .
 
 upload:
 	arduino-cli upload -p $(PORT) --fqbn $(BOARD) -t .
