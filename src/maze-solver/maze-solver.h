@@ -1,9 +1,12 @@
 #pragma once
 
+#include "config.h"
 #include "task.h"
 #include "utils.h"
 #include <Arduino.h>
 #include <Servo.h>
+
+using namespace MazeSolverConfig;
 
 struct WallState {
   bool left;
@@ -13,29 +16,6 @@ struct WallState {
 
 class MazeSolver : Task {
 private:
-  static constexpr int ENA = 6;
-  static constexpr int IN1 = 9;
-  static constexpr int IN2 = 10;
-
-  static constexpr int ENB = 5;
-  static constexpr int IN3 = 7;
-  static constexpr int IN4 = 8;
-
-  static constexpr int SERVO = 2;
-  static constexpr int TRIG = 3;
-  static constexpr int ECHO = 4;
-
-  static constexpr int SERVO_DELAY = 300;
-  static constexpr int ECHO_TIMEOUT = 3000;
-  static constexpr double SOUND_SPEED = 0.034;
-  static constexpr double WALL_THRESHOLD = 20.0;
-
-  static constexpr int MAX_SPEED = 255;
-  static constexpr int BASE_SPEED = 80;
-  static constexpr int TURN_SPEED = 120;
-  static constexpr int MOVE_DELAY = 500;
-  static constexpr int TURN_DELAY = 500;
-
   Servo servo;
 
   void setMotors(int leftSpeed, int rightSpeed) {

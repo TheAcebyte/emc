@@ -1,40 +1,16 @@
 #pragma once
 
+#include "config.h"
 #include "task.h"
+#include "types.h"
 #include "utils.h"
 #include <Arduino.h>
 
-struct SensorState {
-  int left;
-  int middle;
-  int right;
-
-  bool blank() const { return left == 0 && middle == 0 && right == 0; }
-};
+using namespace LineFollowerTypes;
+using namespace LineFollowerPIDConfig;
 
 class LineFollower : public Task {
 private:
-  static constexpr int ENA = 6;
-  static constexpr int IN1 = 9;
-  static constexpr int IN2 = 10;
-
-  static constexpr int ENB = 5;
-  static constexpr int IN3 = 7;
-  static constexpr int IN4 = 8;
-
-  static constexpr int SENSOR_LEFT = A0;
-  static constexpr int SENSOR_MIDDLE = A1;
-  static constexpr int SENSOR_RIGHT = A2;
-
-  static constexpr double MAX_INTEGRAL = 255;
-  static constexpr double KE = 1000;
-  static constexpr double KP = 5.0;
-  static constexpr double KI = 0.0;
-  static constexpr double KD = 1.0;
-
-  static constexpr int MAX_SPEED = 120;
-  static constexpr int BASE_SPEED = 90;
-
   void setMotors(int leftSpeed, int rightSpeed) {
     int absoluteLeftSpeed = clamp(abs(leftSpeed), 0, MAX_SPEED);
     int absoluteRightSpeed = clamp(abs(rightSpeed), 0, MAX_SPEED);
@@ -52,9 +28,9 @@ private:
 
   SensorState readSensors() {
     SensorState sensors{
-        analogRead(SENSOR_LEFT),
-        analogRead(SENSOR_MIDDLE),
-        analogRead(SENSOR_RIGHT),
+        digitalRead(SENSOR_LEFT) == HIGH,
+        digitalRead(SENSOR_MIDDLE) == HIGH,
+        digitalRead(SENSOR_RIGHT) == HIGH,
     };
 
     return sensors;

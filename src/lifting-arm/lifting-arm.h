@@ -1,36 +1,16 @@
 #pragma once
 
+#include "config.h"
 #include "lifting-arm-controller.h"
 #include "task.h"
 #include "utils.h"
 #include <Arduino.h>
 #include <Servo.h>
 
+using namespace LiftingArmConfig;
+
 class LiftingArm : Task {
 private:
-  static constexpr int ENA = 6;
-  static constexpr int IN1 = 7;
-  static constexpr int IN2 = 8;
-
-  static constexpr int ENB = 5;
-  static constexpr int IN3 = 4;
-  static constexpr int IN4 = 12;
-
-  static constexpr int MAX_SPEED = 100;
-
-  static constexpr int ARM_SERVO = 10;
-  static constexpr int CLAW_SERVO = 9;
-
-  static constexpr int ARM_MIN_ANGLE = 0;
-  static constexpr int ARM_MAX_ANGLE = 90;
-  static constexpr int ARM_STEP_ANGLE = 5;
-
-  static constexpr int CLAW_MIN_ANGLE = 0;
-  static constexpr int CLAW_MAX_ANGLE = 90;
-  static constexpr int CLAW_STEP_ANGLE = 5;
-
-  static constexpr int TICK_DELAY = 20;
-
   LiftingArmController &controller = LiftingArmController::getController();
   Servo armServo;
   Servo clawServo;

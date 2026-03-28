@@ -1,13 +1,16 @@
 #pragma once
 
+#include "config.h"
 #include <Arduino.h>
+
+using namespace LiftingArmConfig;
 
 #define REMOTEXY_MODE__SOFTSERIAL
 
 #include <SoftwareSerial.h>
 
-#define REMOTEXY_SERIAL_RX 2
-#define REMOTEXY_SERIAL_TX 3
+#define REMOTEXY_SERIAL_RX RX
+#define REMOTEXY_SERIAL_TX TX
 #define REMOTEXY_SERIAL_SPEED 9600
 
 #include <RemoteXY.h>
