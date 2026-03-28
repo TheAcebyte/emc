@@ -42,7 +42,6 @@ public:
   LiftingArmController(const LiftingArmController &other) = delete;
   LiftingArmController operator=(const LiftingArmController &other) = delete;
 
-  // void init() { RemoteXY_Init(); }
   void step() { RemoteXYEngine.handler(); }
   bool isConnected() { return RemoteXY.connect_flag; }
 

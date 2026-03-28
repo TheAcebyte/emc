@@ -1,6 +1,5 @@
 #pragma once
 
-#include "HardwareSerial.h"
 #include "lifting-arm-controller.h"
 #include "task.h"
 #include "utils.h"
@@ -10,17 +9,17 @@
 class LiftingArm : Task {
 private:
   static constexpr int ENA = 6;
-  static constexpr int IN1 = 9;
-  static constexpr int IN2 = 10;
+  static constexpr int IN1 = 7;
+  static constexpr int IN2 = 8;
 
   static constexpr int ENB = 5;
-  static constexpr int IN3 = 7;
-  static constexpr int IN4 = 8;
+  static constexpr int IN3 = 4;
+  static constexpr int IN4 = 12;
 
-  static constexpr int MAX_SPEED = 80;
+  static constexpr int MAX_SPEED = 100;
 
-  static constexpr int ARM_SERVO = 11;
-  static constexpr int CLAW_SERVO = 12;
+  static constexpr int ARM_SERVO = 10;
+  static constexpr int CLAW_SERVO = 9;
 
   static constexpr int ARM_MIN_ANGLE = 0;
   static constexpr int ARM_MAX_ANGLE = 90;
@@ -37,13 +36,13 @@ private:
   Servo clawServo;
 
   void setMotors(int leftSpeed, int rightSpeed) {
-    digitalWrite(IN1, leftSpeed > 0 ? HIGH : LOW);
-    digitalWrite(IN2, leftSpeed < 0 ? HIGH : LOW);
-    analogWrite(ENA, abs(leftSpeed));
+    digitalWrite(IN3, leftSpeed > 0 ? HIGH : LOW);
+    digitalWrite(IN4, leftSpeed < 0 ? HIGH : LOW);
+    analogWrite(ENB, abs(leftSpeed));
 
-    digitalWrite(IN3, rightSpeed > 0 ? HIGH : LOW);
-    digitalWrite(IN4, rightSpeed < 0 ? HIGH : LOW);
-    analogWrite(ENB, abs(rightSpeed));
+    digitalWrite(IN1, rightSpeed > 0 ? HIGH : LOW);
+    digitalWrite(IN2, rightSpeed < 0 ? HIGH : LOW);
+    analogWrite(ENA, abs(rightSpeed));
   }
 
   void stopMotors() { setMotors(0, 0); }
@@ -109,7 +108,6 @@ public:
 
     armServo.attach(ARM_SERVO);
     clawServo.attach(CLAW_SERVO);
-    Serial.begin(9600);
   }
 
   void loop() override {
@@ -121,7 +119,6 @@ public:
 
     adjustMotors();
     adjustServos();
-
     delay(TICK_DELAY);
   }
 };

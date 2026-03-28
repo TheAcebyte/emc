@@ -15,7 +15,7 @@ public:
       return;
     }
 
-    auto val = Serial.read();
-    Serial.println(val);
+    char x = Serial.read();
+    Serial.println(x);
   }
 };

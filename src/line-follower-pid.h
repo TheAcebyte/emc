@@ -1,12 +1,8 @@
-#include "task.h"
-#include <Arduino.h>
+#pragma once
 
-template<typename T>
-T clamp(T x, T min, T max) {
-  if (x < min) return min;
-  if (x > max) return max;
-  return x;
-}
+#include "task.h"
+#include "utils.h"
+#include <Arduino.h>
 
 struct SensorState {
   int left;
@@ -31,13 +27,13 @@ private:
   static constexpr int SENSOR_RIGHT = A2;
 
   static constexpr double MAX_INTEGRAL = 255;
-  static constexpr double KE = 100;
-  static constexpr double KP = 0.8;
+  static constexpr double KE = 1000;
+  static constexpr double KP = 5.0;
   static constexpr double KI = 0.0;
-  static constexpr double KD = 0.2;
+  static constexpr double KD = 1.0;
 
-  static constexpr int MAX_SPEED = 200;
-  static constexpr int BASE_SPEED = 100;
+  static constexpr int MAX_SPEED = 120;
+  static constexpr int BASE_SPEED = 90;
 
   void setMotors(int leftSpeed, int rightSpeed) {
     int absoluteLeftSpeed = clamp(abs(leftSpeed), 0, MAX_SPEED);
@@ -86,12 +82,20 @@ private:
     return turn;
   }
 
+  void adjustMotors(SensorState sensors) {
+    int turn = 0;
+    if (!sensors.blank()) {
+      double error = calculateError(sensors);
+      turn = calculateTurn(error);
+    }
+
+    int leftSpeed = BASE_SPEED - turn;
+    int rightSpeed = BASE_SPEED + turn;
+    setMotors(leftSpeed, rightSpeed);
+  }
+
 public:
   void setup() override {
-    pinMode(SENSOR_LEFT, INPUT);
-    pinMode(SENSOR_MIDDLE, INPUT);
-    pinMode(SENSOR_RIGHT, INPUT);
-
     pinMode(ENA, OUTPUT);
     pinMode(IN1, OUTPUT);
     pinMode(IN2, OUTPUT);
@@ -99,18 +103,14 @@ public:
     pinMode(ENB, OUTPUT);
     pinMode(IN3, OUTPUT);
     pinMode(IN4, OUTPUT);
+
+    pinMode(SENSOR_LEFT, INPUT);
+    pinMode(SENSOR_MIDDLE, INPUT);
+    pinMode(SENSOR_RIGHT, INPUT);
   }
 
   void loop() override {
-    SensorState sensors = readSensors();
-    int turn = 0;
-    if (!sensors.blank()) {
-      double error = calculateError(sensors);
-      turn = calculateTurn(error);
-    }
-
-    int leftSpeed = BASE_SPEED + turn;
-    int rightSpeed = BASE_SPEED - turn;
-    setMotors(leftSpeed, rightSpeed);
+    auto sensors = readSensors();
+    adjustMotors(sensors);
   }
 };

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "task.h"
 #include <Arduino.h>
 
@@ -48,7 +50,7 @@ private:
   static constexpr int SENSOR_RIGHT = 12;
 
   static constexpr int BASE_SPEED = 70;
-  static constexpr int TURN_SPEED = 140;
+  static constexpr int TURN_SPEED = 100;
 
   static inline constexpr MovementMapping MOVEMENT_MAPPINGS[] = {
     {Movement::FORWARD, {.left =  BASE_SPEED, .right =  BASE_SPEED}},
@@ -113,16 +115,17 @@ private:
 
 public:
   void setup() override {
-    pinMode(SENSOR_LEFT, INPUT);
-    pinMode(SENSOR_MIDDLE, INPUT);
-    pinMode(SENSOR_RIGHT, INPUT);
-
     pinMode(ENA, OUTPUT);
     pinMode(IN1, OUTPUT);
     pinMode(IN2, OUTPUT);
+
     pinMode(ENB, OUTPUT);
     pinMode(IN3, OUTPUT);
     pinMode(IN4, OUTPUT);
+
+    pinMode(SENSOR_LEFT, INPUT);
+    pinMode(SENSOR_MIDDLE, INPUT);
+    pinMode(SENSOR_RIGHT, INPUT);
   }
 
   void loop() override {
