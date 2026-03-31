@@ -11,13 +11,13 @@ using namespace LineFollowerConfig;
 class LineFollower : public Task {
 private:
   void setMotors(int leftSpeed, int rightSpeed) {
-    digitalWrite(IN1, leftSpeed > 0 ? HIGH : LOW);
-    digitalWrite(IN2, leftSpeed < 0 ? HIGH : LOW);
-    analogWrite(ENA, abs(leftSpeed));
+    digitalWrite(IN3, leftSpeed > 0 ? HIGH : LOW);
+    digitalWrite(IN4, leftSpeed < 0 ? HIGH : LOW);
+    analogWrite(ENB, abs(leftSpeed));
 
-    digitalWrite(IN3, rightSpeed > 0 ? HIGH : LOW);
-    digitalWrite(IN4, rightSpeed < 0 ? HIGH : LOW);
-    analogWrite(ENB, abs(rightSpeed));
+    digitalWrite(IN1, rightSpeed > 0 ? HIGH : LOW);
+    digitalWrite(IN2, rightSpeed < 0 ? HIGH : LOW);
+    analogWrite(ENA, abs(rightSpeed));
   }
 
   void stopMotors() { setMotors(0, 0); }

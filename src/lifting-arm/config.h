@@ -19,12 +19,12 @@ constexpr int MAX_SPEED = 100;
 // Arm servo
 constexpr int ARM_MIN_ANGLE = 0;
 constexpr int ARM_MAX_ANGLE = 90;
-constexpr int ARM_STEP_ANGLE = 5;
+constexpr int ARM_STEP_ANGLE = 2;
 
 // Claw servo
 constexpr int CLAW_MIN_ANGLE = 0;
-constexpr int CLAW_MAX_ANGLE = 90;
-constexpr int CLAW_STEP_ANGLE = 5;
+constexpr int CLAW_MAX_ANGLE = 48;
+constexpr int CLAW_STEP_ANGLE = 2;
 
 // Framerate
 constexpr int TICK_DELAY = 20;

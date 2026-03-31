@@ -5,15 +5,20 @@
 #include "task.h"
 #include "utils.h"
 #include <Arduino.h>
-#include <Servo.h>
+#include <PWMServo.h>
 
 using namespace LiftingArmConfig;
+
+struct ServoMotor {
+  PWMServo servo;
+  int angle;
+};
 
 class LiftingArm : Task {
 private:
   LiftingArmController &controller = LiftingArmController::getController();
-  Servo armServo;
-  Servo clawServo;
+  ServoMotor arm;
+  ServoMotor claw;
 
   void setMotors(int leftSpeed, int rightSpeed) {
     digitalWrite(IN3, leftSpeed > 0 ? HIGH : LOW);
@@ -27,28 +32,48 @@ private:
 
   void stopMotors() { setMotors(0, 0); }
 
+  int clampArmAngle(int angle) {
+    return clamp(angle, ARM_MIN_ANGLE, ARM_MAX_ANGLE);
+  }
+
   void nudgeArmForward() {
-    int newAngle = armServo.read() + ARM_STEP_ANGLE;
-    int clampedAngle = clamp(newAngle, ARM_MIN_ANGLE, ARM_MAX_ANGLE);
-    armServo.write(clampedAngle);
+    int angle = arm.angle;
+    int newAngle = clampArmAngle(angle + ARM_STEP_ANGLE);
+    if (newAngle != angle) {
+      arm.servo.write(newAngle);
+      arm.angle = newAngle;
+    }
   }
 
   void nudgeArmBackward() {
-    int newAngle = armServo.read() - ARM_STEP_ANGLE;
-    int clampedAngle = clamp(newAngle, ARM_MIN_ANGLE, ARM_MAX_ANGLE);
-    armServo.write(clampedAngle);
+    int angle = arm.angle;
+    int newAngle = clampArmAngle(angle - ARM_STEP_ANGLE);
+    if (newAngle != angle) {
+      arm.servo.write(newAngle);
+      arm.angle = newAngle;
+    }
+  }
+
+  int clampClawAngle(int angle) {
+    return clamp(angle, CLAW_MIN_ANGLE, CLAW_MAX_ANGLE);
   }
 
   void nudgeClawIn() {
-    int newAngle = clawServo.read() + CLAW_STEP_ANGLE;
-    int clampedAngle = clamp(newAngle, CLAW_MIN_ANGLE, CLAW_MAX_ANGLE);
-    clawServo.write(clampedAngle);
+    int angle = claw.angle;
+    int newAngle = clampClawAngle(angle + CLAW_STEP_ANGLE);
+    if (newAngle != angle) {
+      claw.servo.write(newAngle);
+      claw.angle = newAngle;
+    }
   }
 
   void nudgeClawOut() {
-    int newAngle = clawServo.read() - CLAW_STEP_ANGLE;
-    int clampedAngle = clamp(newAngle, CLAW_MIN_ANGLE, CLAW_MAX_ANGLE);
-    clawServo.write(clampedAngle);
+    int angle = claw.angle;
+    int newAngle = clampClawAngle(angle - CLAW_STEP_ANGLE);
+    if (newAngle != angle) {
+      claw.servo.write(newAngle);
+      claw.angle = newAngle;
+    }
   }
 
   void adjustMotors() {
@@ -86,8 +111,11 @@ public:
     pinMode(IN3, OUTPUT);
     pinMode(IN4, OUTPUT);
 
-    armServo.attach(ARM_SERVO);
-    clawServo.attach(CLAW_SERVO);
+    arm.servo.attach(ARM_SERVO);
+    arm.servo.write(ARM_MIN_ANGLE);
+
+    claw.servo.attach(CLAW_SERVO);
+    claw.servo.write(CLAW_MIN_ANGLE);
   }
 
   void loop() override {

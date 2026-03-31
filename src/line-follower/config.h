@@ -10,9 +10,9 @@ constexpr int IN2 = 10;
 constexpr int ENB = 5;
 constexpr int IN3 = 7;
 constexpr int IN4 = 8;
-constexpr int SENSOR_LEFT = 13;
-constexpr int SENSOR_MIDDLE = 2;
-constexpr int SENSOR_RIGHT = 12;
+constexpr int SENSOR_LEFT = 11;
+constexpr int SENSOR_MIDDLE = 12;
+constexpr int SENSOR_RIGHT = 13;
 }; // namespace LineFollowerPins
 
 namespace LineFollowerConfig {

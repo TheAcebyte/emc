@@ -1,14 +1,13 @@
 #pragma once
 
-#include <Arduino.h>
 #include "task.h"
+#include <Arduino.h>
 
 class DebugMotorTurn : public Task {
 private:
   static constexpr int ENA = 6;
-  static constexpr int IN1 = 9;
-  static constexpr int IN2 = 10;
-
+  static constexpr int IN1 = 2;
+  static constexpr int IN2 = 4;
   static constexpr int ENB = 5;
   static constexpr int IN3 = 7;
   static constexpr int IN4 = 8;
@@ -27,12 +26,12 @@ public:
   }
 
   void loop() override {
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
-    analogWrite(ENA, TURN_SPEED);
-
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
     analogWrite(ENB, TURN_SPEED);
+
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
+    analogWrite(ENA, TURN_SPEED);
   }
 };

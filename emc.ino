@@ -1,8 +1,8 @@
-#include "src/line-follower.h"
+#include "src/lifting-arm/lifting-arm.h"
 
-LineFollower task;
+LiftingArm task;
 
-void setup() {
+void setup() { 
   task.setup();
 }
 
